@@ -1,0 +1,33 @@
+C++
+#include "BluetoothSerial.h"
+#include <ESP32Servo.h>
+
+BluetoothSerial SerialBT;
+
+void setup() {
+  Serial.begin(115200);
+  SerialBT.begin("Brazo_Robotico_ESP32"); // Nombre visible en el teléfono
+  // Inicialización de servos y sensores...
+}
+
+void loop() {
+  if (SerialBT.available()) {
+    String trama = SerialBT.readStringUntil('\n'); // Lee la instrucción completa
+    char comando = trama.charAt(0);
+
+    // MODO AUTOMÁTICO
+    if (comando == 'A') {
+      // Activar rutina con sensor de distancia y matrices homogéneas
+    } else if (comando == 'a') {
+      // Desactivar rutina automática
+    }
+
+    // MODO MANUAL (Extrae la letra y el valor del ángulo)
+    int angulo = trama.substring(1).toInt();
+    if (comando == 'B') servoBase.write(angulo);
+    if (comando == 'H') servoHombro.write(angulo);
+    if (comando == 'C') servoCodo.write(angulo);
+    if (comando == 'M') servoMuneca.write(angulo);
+    if (comando == 'P') servoPinza.write(angulo);
+  }
+}
