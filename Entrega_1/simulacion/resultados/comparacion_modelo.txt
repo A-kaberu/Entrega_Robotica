@@ -1,0 +1,1 @@
+Firmware vs modelo Python: 1145 muestras, diferencia maxima en la punta 0.001 mm

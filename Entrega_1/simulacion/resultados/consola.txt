@@ -1,0 +1,273 @@
+
+=== Brazo robotico 4 GDL ===
+Bluetooth: Brazo_Robotico_ESP32 | PCA9685: OK (4.89 us/tick) | ToF: OK | referencia ToF: falta 'aprender'
+Los servos estan libres. Sujeta el brazo cerca de HOME y escribe 'home'.
+ERR,falta calibrar base (canal 0): a b min max
+ERR,falta calibrar hombro (canal 1): a b min max
+ERR,falta calibrar codo (canal 2): a b min max
+ERR,falta calibrar muneca (canal 3): a b min max
+ERR,falta calibrar pinza (canal 4): a b min max
+App: B/H/C/M/P<0-180> | A auto | a parar
+home | move x y z [phi] | q q1 q2 q3 q4 | pinza 0-100|abrir|cerrar | estado | dh
+us <ch> <us> | obj <ch> <us> | off | cal | cal <ch> a|b <deg> | cal <ch> lim | cal reset
+verificar | prueba [1|2] | aprender | tof | tof cal <mm> | corregir 1|0 | scan | pca
+pwm <0-15> <us> | vel [us/s] | reposo [s] | bt 1|0 | telem 1|0 | ayuda
+SOLTAR servos (al instante, incluso en movimiento): off | soltar | X
+ERR,falta calibrar base (canal 0): a b min max
+ERR,falta calibrar hombro (canal 1): a b min max
+ERR,falta calibrar codo (canal 2): a b min max
+ERR,falta calibrar muneca (canal 3): a b min max
+ERR,comando no completado
+base -> 1500 us (q = 0.0)  [primer pulso: aplicado de golpe]
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  90.0, 2500)  [ 600, 2400]  [ -65.5,   81.8]   12.22  a---
+  1   hombro  (  90.0, 1500)  (   0.0,  500)  [ 600, 2400]  [   9.0,  171.0]   11.11  ----
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  ab--
+  1   hombro  (  90.0, 1500)  (   0.0,  500)  [ 600, 2400]  [   9.0,  171.0]   11.11  ----
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abm-
+  1   hombro  (  90.0, 1500)  (   0.0,  500)  [ 600, 2400]  [   9.0,  171.0]   11.11  ----
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1500)  (   0.0,  500)  [ 600, 2400]  [   9.0,  171.0]   11.11  ----
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+hombro -> 1500 us (q = 90.0)  [primer pulso: aplicado de golpe]
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  (   0.0,  500)  [ 600, 2400]  [  12.9,  244.3]    7.78  a---
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  ab--
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1100]  [ 100.0,  100.0]  -10.00  ab-M
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+codo -> 1500 us (q = -90.0)  [primer pulso: aplicado de golpe]
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  (   0.0, 2500)  [ 600, 2400]  [ -95.0,   -5.0]   20.00  a---
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  ab--
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abm-
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+muneca -> 1500 us (q = 0.0)  [primer pulso: aplicado de golpe]
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1950)  [ 600, 2400]  [-180.0,    0.0]   10.00  a---
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  ab--
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  abm-
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  abmM
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+pinza -> 1500 us (q = 50.0)  [primer pulso: aplicado de golpe]
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  abmM
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  a---
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  abmM
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1200, 1800]  [   0.0,  100.0]    6.00  ab--
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  abmM
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1200, 1800]  [   0.0,  100.0]    6.00  abm-
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  abmM
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1200, 1800]  [   0.0,  100.0]    6.00  abmM
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1400)  (  45.0, 1850)  [ 850, 2350]  [ -55.0,   95.0]   10.00  abmM
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0,  700)  ( -45.0, 1150)  [ 650, 1450]  [ -95.0,  -15.0]   10.00  abmM
+  3   muneca  ( -90.0, 1500)  ( -45.0, 1050)  [1150, 1850]  [-125.0,  -55.0]  -10.00  abmM
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1200, 1800]  [   0.0,  100.0]    6.00  abmM
+Rango que usa la tarea vs rango calibrado [deg D-H]:
+  base    necesita [  -45.0,    90.0]   calibrado [  -55.0,    95.0]   OK
+  hombro  necesita [   49.4,    88.0]   calibrado [   40.0,   100.0]   OK
+  codo    necesita [  -88.0,   -24.0]   calibrado [  -95.0,   -15.0]   OK
+  muneca  necesita [ -116.1,   -62.5]   calibrado [ -125.0,   -55.0]   OK
+VERIFICAR: las 87 poses son alcanzables.
+ERR,primero ejecuta 'aprender' con los puntos de recogida vacios
+ i | theta [deg] | d [mm] | a [mm] | alpha [deg]
+ 1 |        0.0  |   32.0 |   -1.2 |     90
+ 2 |       88.0  |    0.0 |   67.0 |      0
+ 3 |      -88.0  |    0.0 |   60.4 |      0
+ 4 |      -90.0  |    0.0 |   85.0 |      0
+T0_4 =
+  [  -0.000    1.000    0.000     61.5]
+  [   0.000    0.000   -1.000      0.0]
+  [  -1.000   -0.000   -0.000     14.0]
+  [   0.000    0.000    0.000      1.0]
+Punta sobre la mesa: x=61.5 y=0.0 z=49.0 mm, phi=-90.0 deg
+D,94
+T,0.0,88.0,-88.0,-90.0,0,-1.2,0.0,67.0,1.1,-0.0,134.0,61.5,-0.0,134.0,61.5,0.0,49.0
+OK,punto 1 vacio: 80 mm (esperado 80) -> error de altura dz = +0.0 mm
+OK,punto 2 vacio: 80 mm (esperado 80) -> error de altura dz = +0.0 mm
+OK,punto 3 vacio: 80 mm (esperado 80) -> error de altura dz = +0.0 mm
+OK,pila vacio: 80 mm (esperado 80) -> error de altura dz = +0.0 mm
+Correccion de altura por ToF: inactiva (comando 'corregir 1' / 'corregir 0')
+E,INICIO
+E,BUSCANDO,1
+E,DISTANCIA,1,80,80,VACIO
+E,BUSCANDO,2
+E,DISTANCIA,2,80,80,VACIO
+E,BUSCANDO,3
+E,DISTANCIA,3,80,80,VACIO
+E,FIN,0
+E,INICIO
+E,BUSCANDO,1
+E,DISTANCIA,1,80,80,VACIO
+E,BUSCANDO,2
+E,DISTANCIA,2,80,80,VACIO
+E,BUSCANDO,3
+E,DISTANCIA,3,80,80,VACIO
+E,FIN,0
+E,INICIO
+E,BUSCANDO,1
+E,DISTANCIA,1,80,80,VACIO
+E,BUSCANDO,2
+E,DISTANCIA,2,60,80,CUBO
+E,TOMANDO,2
+E,APILANDO,1
+E,BUSCANDO,3
+E,DISTANCIA,3,80,80,VACIO
+E,BUSCANDO,1
+E,DISTANCIA,1,80,80,VACIO
+E,BUSCANDO,2
+E,DISTANCIA,2,80,80,VACIO
+E,BUSCANDO,3
+E,DISTANCIA,3,80,80,VACIO
+E,FIN,1
+E,INICIO
+E,BUSCANDO,1
+E,DISTANCIA,1,60,80,CUBO
+E,TOMANDO,1
+E,APILANDO,1
+E,BUSCANDO,2
+E,DISTANCIA,2,60,80,CUBO
+E,TOMANDO,2
+E,APILANDO,2
+E,BUSCANDO,3
+E,DISTANCIA,3,60,80,CUBO
+E,TOMANDO,3
+E,APILANDO,3
+E,FIN,3
+E,INICIO
+E,BUSCANDO,1
+E,DISTANCIA,1,80,80,VACIO
+E,BUSCANDO,2
+E,DISTANCIA,2,80,80,VACIO
+E,BUSCANDO,3
+E,DISTANCIA,3,80,80,VACIO
+E,FIN,0
+E,INICIO
+E,BUSCANDO,1
+E,PARADO
+E,INICIO
+E,BUSCANDO,1
+OK,servos libres
+E,PARADO
+ERR,muneca q=0.0 fuera de limites [-125.0, -55.0]
+ERR,comando no completado
+ERR,inalcanzable x=200 y=0 z=5 phi=-90
+ERR,comando no completado
+codo -> 1450 us (q = -15.0)  [recortado a su limite seguro]
+codo -> 650 us (q = -95.0)
+AVISO,codo quieto en su limite (650 us): retrocede 30 us para no forzar
+OK,servos libres
+AVISO,reposo: 90 s sin ordenes, servos liberados para que no se calienten ('reposo 0' lo desactiva)
+OK,calibracion de partida restaurada
+hombro -> 1500 us (q = 90.0)  [primer pulso: aplicado de golpe]
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1500)  (  90.0, 2500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  1   hombro  (  90.0, 1200)  (   0.0,  500)  [ 600, 2400]  [  12.9,  244.3]    7.78  a---
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1500)  (  90.0, 2500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  ab--
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1500)  (  90.0, 2500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1100]  [ 100.0,  100.0]  -10.00  ab-M
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----
+ERR,este limite esta muy cerca del otro: mueve el servo hacia el lado contrario y repite
+canal  nombre   A(q, us)        B(q, us)        limites us     limites q        us/deg  hecho
+  0   base    (   0.0, 1500)  (  90.0, 2500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  1   hombro  (  90.0, 1200)  ( 135.0,  750)  [1100, 1700]  [  40.0,  100.0]  -10.00  abmM
+  2   codo    ( -90.0, 1500)  (   0.0, 2500)  [ 600, 2400]  [-171.0,   -9.0]   11.11  ----
+  3   muneca  (   0.0, 1500)  ( -90.0,  500)  [ 600, 2400]  [ -81.0,   81.0]   11.11  ----
+  4   pinza   (   0.0, 1200)  ( 100.0, 1800)  [1100, 1900]  [ -16.7,  116.7]    6.00  ----

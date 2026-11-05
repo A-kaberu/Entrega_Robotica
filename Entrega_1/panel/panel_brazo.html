@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel Brazo 4GDL</title>
+<style>
+:root {
+  --bg: #f4f5f7; --panel: #ffffff; --text: #1d2330; --muted: #667085; --line: #d9dde3;
+  --accent: #2563eb; --ok: #15803d; --warn: #b45309; --stop: #dc2626; --grid: #eceef2;
+  --l1: #6b7280; --l2: #2563eb; --l3: #0891b2; --l4: #d97706; --joint: #111827;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #11151c; --panel: #1a2029; --text: #e6e9ee; --muted: #98a2b3; --line: #2c3440;
+    --accent: #60a5fa; --ok: #4ade80; --warn: #fbbf24; --stop: #f87171; --grid: #222a35;
+    --l1: #9ca3af; --l2: #60a5fa; --l3: #22d3ee; --l4: #fbbf24; --joint: #e5e7eb;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.4 system-ui, "Segoe UI", sans-serif; }
+header { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px 16px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+header h1 { font-size: 17px; margin: 0 12px 0 0; }
+.badge { padding: 3px 10px; border-radius: 99px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); }
+.badge.on { color: var(--ok); border-color: var(--ok); }
+main { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 14px; padding: 14px 16px; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+button { font: inherit; padding: 6px 12px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); color: var(--text); cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.stop { background: var(--stop); border-color: var(--stop); color: #fff; font-weight: 700; }
+button.soltar { background: var(--warn); border-color: var(--warn); color: #fff; font-weight: 700; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; align-items: center; }
+.slider { display: grid; grid-template-columns: 70px 1fr 40px; gap: 8px; align-items: center; margin-bottom: 6px; }
+.slider input { width: 100%; }
+input[type=number], input[type=text] { font: inherit; width: 70px; padding: 5px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--text); }
+input[type=text] { width: 100%; }
+.views { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .views { grid-template-columns: 1fr; } }
+canvas { width: 100%; aspect-ratio: 6 / 5; background: var(--bg); border-radius: 8px; border: 1px solid var(--line); }
+.cap { font-size: 12px; color: var(--muted); margin-top: 4px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: right; }
+th:first-child, td:first-child { text-align: left; }
+.tables { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .tables { grid-template-columns: 1fr; } }
+#log { height: 220px; overflow: auto; font: 12px/1.35 Consolas, monospace; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px; white-space: pre-wrap; }
+#log .tx { color: var(--accent); }
+#log .err { color: var(--stop); }
+#log .ev { color: var(--ok); }
+#log .warn { color: var(--warn); font-weight: 600; }
+.badge.warn { color: var(--warn); border-color: var(--warn); }
+.note { color: var(--warn); font-size: 13px; }
+details { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; }
+details section { border: 0; padding: 8px 0 0; margin: 0; }
+summary { cursor: pointer; font-weight: 600; }
+#tblPasos td, #tblPasos th, #tblTof td, #tblTof th { text-align: center; }
+#estadoRutina { font-weight: 600; }
+#banner { display: none; margin: 12px 16px 0; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--warn); color: var(--text); background: var(--panel); }
+#banner.show { display: block; }
+#banner b { color: var(--warn); }
+#wiz .paso { font-size: 12px; color: var(--muted); }
+#wiz .titulo { font-size: 16px; font-weight: 700; margin: 4px 0 6px; }
+#wiz .texto { margin-bottom: 10px; }
+#wiz .pulso { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; margin: 6px 0; }
+#wiz .barra { height: 6px; background: var(--grid); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+#wiz .barra div { height: 100%; background: var(--accent); width: 0; }
+#wiz button.guardar { background: var(--ok); border-color: var(--ok); color: #fff; font-weight: 600; }
+#wiz .ajuste button { min-width: 64px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Brazo robótico 4 GDL · panel</h1>
+  <button id="btnCon" class="primary">Conectar</button>
+  <span id="badge" class="badge">sin conexión · simulación</span>
+  <button class="stop" data-cmd="a" title="Detiene el brazo donde está, con fuerza (también la rutina). Tecla Esc">PARAR</button>
+  <button class="soltar" data-cmd="X" title="Corta la señal de TODOS los servos al instante: quedan sin fuerza (el brazo cae por su peso). Tecla F2">SOLTAR SERVOS</button>
+  <span id="tof" class="badge" title="Distancia que mide el sensor de la mano">ToF: —</span>
+  <span id="servos" class="badge" title="Con los servos sueltos el firmware no envía telemetría">servos: —</span>
+  <span id="estadoRutina"></span>
+</header>
+<div id="banner"></div>
+
+<main>
+  <div>
+    <section>
+      <h2>Control manual · articulaciones (grados de servo)</h2>
+      <div id="sliders"></div>
+      <div class="cap">Envía B/H/C/M/P 0–180, igual que la app. El 0–180 recorre el rango calibrado de cada servo, que el firmware recorta al rango seguro de la tarea (0 = un límite, 180 = el otro), y el brazo lo sigue con arranque y frenado suaves.</div>
+    </section>
+
+    <section>
+      <h2>Estado</h2>
+      <div class="row">
+        <button data-cmd="estado">Estado del brazo</button>
+        <button data-cmd="tof">Medir con el sensor</button>
+        <button data-cmd="home">HOME</button>
+      </div>
+      <div class="row">
+        <button data-cmd="pinza abrir">Abrir pinza</button>
+        <button data-cmd="pinza cerrar">Cerrar pinza</button>
+      </div>
+      <div class="row">
+        <button id="btnTofCal" title="Superficie plana a una distancia medida con regla, frente al sensor">Ajustar sensor</button>
+        <input id="tofReal" type="number" value="100" min="30" max="500"><span class="cap">mm reales</span>
+      </div>
+      <div class="cap" id="capEstado">El estado se escribe en la consola.</div>
+    </section>
+
+    <section>
+      <h2>Rutina con sensor (ToF)</h2>
+      <div class="cap">El sensor mira cada punto. Si hay un cubo, el brazo llega hasta él con D-H, lo toma y lo lleva al punto final. Si no hay cubos, vuelve a la posición inicial.</div>
+      <div class="row" style="margin-top:8px">
+        <button id="btnAprender">1. Aprender mesa vacía</button>
+        <button id="btnRutinaTof" class="primary">2. Realizar rutina</button>
+      </div>
+      <table id="tblTof"><thead><tr><th>Punto</th><th>Medido [mm]</th><th>Vacío [mm]</th><th>Resultado</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <section>
+      <h2>Grabar rutina</h2>
+      <div class="cap">Lleva el brazo con los sliders a cada posición y pulsa Guardar: abajo sobre el cubo, cerrar pinza, subir, ir al otro lugar, bajar y abrir. La rutina repite esos pasos, también al recargar el panel.</div>
+      <div class="row" style="margin-top:8px">
+        <button id="btnGuardarPose" class="primary">Guardar posición</button>
+        <button id="btnQuitarPose">Quitar último</button>
+        <button id="btnBorrarPoses">Borrar todo</button>
+      </div>
+      <table id="tblPasos"><thead><tr><th>#</th><th>q1</th><th>q2</th><th>q3</th><th>q4</th><th>Pinza</th></tr></thead><tbody></tbody></table>
+      <div class="row" style="margin-top:8px">
+        <button id="btnEjecutar" class="primary">Realizar rutina</button>
+        <button id="btnPausa">Pausa</button>
+        <button id="btnDetener">Detener</button>
+        <button id="btnSimular">Simular</button>
+        <label><input id="chkBucle" type="checkbox"> Repetir</label>
+      </div>
+      <div class="cap" id="capRutina">Sin pasos.</div>
+    </section>
+
+    <details>
+      <summary>Mover a un punto (x, y, z)</summary>
+    <section>
+      <h2>Movimiento con cinemática D-H</h2>
+      <div class="row">
+        <span>x</span><input id="mx" type="number" value="90">
+        <span>y</span><input id="my" type="number" value="0">
+        <span>z</span><input id="mz" type="number" value="40">
+        <span>φ</span><input id="mphi" type="number" value="-90">
+      </div>
+      <div class="row"><button id="btnMove">move (IK)</button><span class="cap">mm sobre la mesa, φ en grados</span></div>
+      <div class="row">
+        <span>q</span><input id="q1" type="number" value="0"><input id="q2" type="number" value="90">
+        <input id="q3" type="number" value="-90"><input id="q4" type="number" value="0">
+      </div>
+      <div class="row"><button id="btnQ">q (articular)</button><span class="cap">grados D-H</span></div>
+      <div class="row">
+      </div>
+    </section>
+    </details>
+
+    <details>
+      <summary>Calibración</summary>
+    <section id="wiz">
+      <h2>Asistente de calibración</h2>
+      <div class="barra"><div id="wBarra"></div></div>
+      <div class="paso" id="wPaso"></div>
+      <div class="titulo" id="wTitulo"></div>
+      <div class="texto" id="wTexto"></div>
+      <div id="wAjuste" class="ajuste">
+        <div class="pulso" id="wPulso">— µs</div>
+        <input id="wSlider" type="range" min="600" max="2400" step="5" value="1000" style="width:100%">
+        <div class="row" style="margin-top:6px">
+          <button data-d="-50">−50</button><button data-d="-10">−10</button><button data-d="-5">−5</button>
+          <button data-d="5">+5</button><button data-d="10">+10</button><button data-d="50">+50</button>
+        </div>
+        <div class="row" style="margin-top:6px">
+          <label><input id="wFino" type="checkbox"> Ajuste fino (la barra cubre solo ±150 µs)</label>
+          <label>µs exactos: <input id="wNum" type="number" min="600" max="2400" step="5" style="width:80px"></label>
+        </div>
+        <div class="cap">Arrastra la barra para acercarte y afina con los botones (10 µs ≈ 1°; 5 µs es lo mínimo que el servo nota). Con <b>Ajuste fino</b> la barra es 6 veces más precisa, y con la barra seleccionada las flechas ← → mueven de a 1 µs. También puedes escribir el valor y pulsar Enter. El servo sigue suave y siempre va al último valor.</div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="wAccion" class="guardar"></button>
+      </div>
+      <div class="row">
+        <button id="wAtras">← Anterior</button>
+        <button id="wSaltar">Saltar →</button>
+        <select id="wIr" title="Lo ya guardado queda en la ESP32; esto solo salta a esa articulación">
+          <option value="">Ir a…</option>
+          <option value="0">Base</option><option value="1">Hombro</option><option value="2">Codo</option>
+          <option value="3">Muñeca</option><option value="4">Pinza</option>
+        </select>
+      </div>
+    </section>
+    </details>
+  </div>
+
+  <div>
+    <section>
+      <h2>Posición D-H en tiempo real</h2>
+      <div class="views">
+        <div><canvas id="cvTop" width="600" height="500"></canvas><div class="cap">Vista superior (x, y). Puntos de recogida en azul y pila en naranja.</div></div>
+        <div><canvas id="cvSide" width="600" height="500"></canvas><div class="cap">Vista lateral en el plano del brazo (r, z).</div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="tables">
+        <div>
+          <h2>Tabla D-H</h2>
+          <table id="tblDH"><thead><tr><th>i</th><th>θ [°]</th><th>d [mm]</th><th>a [mm]</th><th>α [°]</th></tr></thead><tbody></tbody></table>
+        </div>
+        <div>
+          <h2>Orígenes O<sub>i</sub> (mm, z sobre la mesa)</h2>
+          <table id="tblO"><thead><tr><th></th><th>x</th><th>y</th><th>z</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+      <div class="cap" id="capPunta"></div>
+    </section>
+
+    <section>
+      <h2>Consola</h2>
+      <div id="log"></div>
+      <div class="row" style="margin-top:8px">
+        <input id="cmd" type="text" placeholder="comando (ej. estado, us 1 1500, cal, verificar)">
+        <button id="btnSend">Enviar</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+// ---------- Modelo D-H (igual que firmware/src/cinematica.h) ----------
+// <config.h> generado por panel/sincronizar_panel.py desde firmware/src/config.h (huella f510a0ab): no editar a mano
+const L1 = 32, L2 = 67, L3 = 60.4, L4 = 85, A1 = -1.2, H_BASE = 35;
+const Q_HOME = [0, 88, -88, -90];
+const Q_SEGURO = [[-55, 95], [40, 100], [-95, -15], [-125, -55]];   // [min, max] en grados D-H de q1..q4
+const RECOGIDA = [[96, -45], [96, 0], [96, 45]], PILA = [96, 90];   // [r mm, q1 grados]
+const US_ABS_MIN = 600, US_ABS_MAX = 2400;
+const NOMBRES = ["base", "hombro", "codo", "muneca", "pinza"];
+const CONFIG_H = 'f510a0ab';
+// </config.h>
+const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
+
+function matDH(th, d, a, al) {
+  const ct = Math.cos(rad(th)), st = Math.sin(rad(th)), ca = Math.cos(rad(al)), sa = Math.sin(rad(al));
+  return [[ct, -st * ca, st * sa, a * ct], [st, ct * ca, -ct * sa, a * st], [0, sa, ca, d], [0, 0, 0, 1]];
+}
+function mul(A, B) {
+  return A.map((_, i) => B[0].map((_, j) => A[i].reduce((s, _, k) => s + A[i][k] * B[k][j], 0)));
+}
+function tablaDH(q) { return [[q[0], L1, A1, 90], [q[1], 0, L2, 0], [q[2], 0, L3, 0], [q[3], 0, L4, 0]]; }
+function fk(q) {
+  let T = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]];
+  const O = [[0, 0, H_BASE]];
+  for (const f of tablaDH(q)) {
+    T = mul(T, matDH(...f));
+    O.push([T[0][3], T[1][3], T[2][3] + H_BASE]);
+  }
+  return O;
+}
+function ik(x, y, z, phiDeg) {
+  const phi = rad(phiDeg), r = Math.hypot(x, y);
+  const rw = r - A1 - L4 * Math.cos(phi), zw = (z - H_BASE) - L1 - L4 * Math.sin(phi);
+  const D = (rw * rw + zw * zw - L2 * L2 - L3 * L3) / (2 * L2 * L3);
+  if (Math.abs(D) > 1) return null;
+  const s3 = -Math.sqrt(1 - D * D), q3 = Math.atan2(s3, D);
+  const q2 = Math.atan2(zw, rw) - Math.atan2(L3 * s3, L2 + L3 * D);
+  return [deg(Math.atan2(y, x)), deg(q2), deg(q3), phiDeg - deg(q2) - deg(q3)];
+}
+
+// ---------- Estado y dibujo ----------
+let estado = { q: Q_HOME.slice(), pinza: 0, O: fk(Q_HOME) };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+function dibujarVista(cv, puntos, ejes, extra) {
+  const g = cv.getContext('2d'), W = cv.width, H = cv.height;
+  const { x0, x1, y0, y1 } = ejes, s = Math.min(W / (x1 - x0), H / (y1 - y0));
+  const px = x => (x - x0) * s, py = y => H - (y - y0) * s;
+  g.clearRect(0, 0, W, H);
+  g.strokeStyle = css('--grid'); g.lineWidth = 1;
+  for (let v = Math.ceil(x0 / 20) * 20; v <= x1; v += 20) { g.beginPath(); g.moveTo(px(v), 0); g.lineTo(px(v), H); g.stroke(); }
+  for (let v = Math.ceil(y0 / 20) * 20; v <= y1; v += 20) { g.beginPath(); g.moveTo(0, py(v)); g.lineTo(W, py(v)); g.stroke(); }
+  g.strokeStyle = css('--muted'); g.lineWidth = 1.5;
+  g.beginPath(); g.moveTo(px(0), 0); g.lineTo(px(0), H); g.moveTo(0, py(0)); g.lineTo(W, py(0)); g.stroke();
+  g.fillStyle = css('--muted'); g.font = '20px system-ui';
+  g.fillText(ejes.nx, W - 30, py(0) - 8); g.fillText(ejes.ny, px(0) + 8, 22);
+  extra && extra(g, px, py, s);
+  const colores = [css('--l1'), css('--l2'), css('--l3'), css('--l4')];
+  g.lineCap = 'round';
+  for (let i = 0; i < 4; i++) {
+    g.strokeStyle = colores[i]; g.lineWidth = i === 0 ? 14 : 9;
+    g.beginPath(); g.moveTo(px(puntos[i][0]), py(puntos[i][1])); g.lineTo(px(puntos[i + 1][0]), py(puntos[i + 1][1])); g.stroke();
+  }
+  g.fillStyle = css('--joint');
+  puntos.forEach((p, i) => {
+    g.beginPath(); g.arc(px(p[0]), py(p[1]), i === 4 ? 5 : 7, 0, 7); g.fill();
+    g.font = '17px system-ui'; g.fillText('O' + i, px(p[0]) + 9, py(p[1]) - 9);
+  });
+}
+
+function dibujar() {
+  const O = estado.O, q1 = rad(estado.q[0]);
+  dibujarVista(document.getElementById('cvTop'), O.map(p => [p[0], p[1]]),
+    { x0: -110, x1: 230, y0: -140, y1: 140, nx: 'x', ny: 'y' },
+    (g, px, py, s) => {
+      RECOGIDA.forEach(([r, a], i) => marca(g, px(r * Math.cos(rad(a))), py(r * Math.sin(rad(a))), s, css('--accent'), 'R' + (i + 1)));
+      marca(g, px(PILA[0] * Math.cos(rad(PILA[1]))), py(PILA[0] * Math.sin(rad(PILA[1]))), s, css('--l4'), 'Pila');
+    });
+  const rz = O.map(p => [p[0] * Math.cos(q1) + p[1] * Math.sin(q1), p[2]]);
+  dibujarVista(document.getElementById('cvSide'), rz,
+    { x0: -60, x1: 230, y0: -10, y1: 230, nx: 'r', ny: 'z' },
+    (g, px, py, s) => {
+      g.fillStyle = css('--line'); g.fillRect(px(-30), py(H_BASE), 60 * s, H_BASE * s);   // base
+    });
+  const tb = document.querySelector('#tblDH tbody');
+  tb.innerHTML = tablaDH(estado.q).map((f, i) =>
+    `<tr><td>${i + 1}</td><td>${f[0].toFixed(1)}</td><td>${f[1]}</td><td>${f[2]}</td><td>${f[3]}</td></tr>`).join('');
+  document.querySelector('#tblO tbody').innerHTML = O.map((p, i) =>
+    `<tr><td>O${i}</td><td>${p[0].toFixed(1)}</td><td>${p[1].toFixed(1)}</td><td>${p[2].toFixed(1)}</td></tr>`).join('');
+  const phi = estado.q[1] + estado.q[2] + estado.q[3];
+  document.getElementById('capPunta').textContent =
+    `Punta (O4): x=${O[4][0].toFixed(1)}  y=${O[4][1].toFixed(1)}  z=${O[4][2].toFixed(1)} mm · φ = q2+q3+q4 = ${phi.toFixed(1)}° · pinza ${Math.round(estado.pinza)} %`;
+}
+function marca(g, x, y, s, color, txt) {
+  g.strokeStyle = color; g.lineWidth = 2; g.strokeRect(x - 10 * s, y - 10 * s, 20 * s, 20 * s);
+  g.fillStyle = color; g.font = '16px system-ui'; g.fillText(txt, x + 10 * s + 3, y + 5);
+}
+
+// ---------- Consola ----------
+const logEl = document.getElementById('log');
+function log(txt, cls) {
+  const d = document.createElement('div');
+  if (cls) d.className = cls;
+  d.textContent = txt;
+  logEl.appendChild(d);
+  while (logEl.childNodes.length > 400) logEl.removeChild(logEl.firstChild);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// ---------- Puerto serie (Web Serial: USB o puerto COM del Bluetooth) ----------
+let port = null, writer = null;
+const enc = new TextEncoder();
+const conectado = () => !!writer;
+
+function aviso(html) {
+  const b = document.getElementById('banner');
+  b.innerHTML = html;
+  b.classList.toggle('show', !!html);
+}
+const SIN_WEBSERIAL = '<b>Este visor no puede conectarse al brazo.</b> Cierra esta ventana y abre ' +
+  '<code>panel\\panel_brazo.html</code> con <b>Microsoft Edge</b> o <b>Google Chrome</b> ' +
+  '(clic derecho en el archivo → Abrir con). Mientras tanto, el panel funciona solo como simulación.';
+
+function avisoSinConexion() {
+  aviso(('serial' in navigator ? '<b>No estás conectado al brazo:</b> pulsa <b>Conectar</b> arriba. ' : SIN_WEBSERIAL + ' ') +
+    'Sin conexión, los botones no llegan al robot (solo <i>home</i>, <i>move</i> y <i>q</i> se simulan en el dibujo).');
+}
+
+let tRx = 0;
+async function conectar() {
+  if (conectado()) return desconectar();
+  if (!('serial' in navigator)) return aviso(SIN_WEBSERIAL);
+  try {
+    port = await navigator.serial.requestPort();
+  } catch (e) {
+    return aviso('<b>No elegiste ningún puerto.</b> Si la lista aparece vacía: conecta la ESP32 por USB con un cable de ' +
+      '<i>datos</i> (algunos cables solo cargan) y revisa que en VS Code se pueda subir el firmware.');
+  }
+  try {
+    await port.open({ baudRate: 115200 });
+    // DTR y RTS en reposo: si se activan, la ESP32 DevKit se reinicia y suelta los servos
+    await port.setSignals({ dataTerminalReady: false, requestToSend: false }).catch(() => {});
+  } catch (e) {
+    return aviso('<b>El puerto está ocupado.</b> Cierra el <i>Serial Monitor</i> de VS Code / PlatformIO ' +
+      '(o cualquier otro programa que lo use) y vuelve a pulsar Conectar.');
+  }
+  writer = port.writable.getWriter();
+  aviso('');
+  document.getElementById('badge').textContent = 'conectado';
+  document.getElementById('badge').classList.add('on');
+  document.getElementById('btnCon').textContent = 'Desconectar';
+  tRx = 0;
+  leer();
+  setTimeout(() => enviar('telem 1'), 300);
+  setTimeout(() => {
+    if (conectado() && !tRx) aviso('<b>Conectado, pero la ESP32 no responde.</b> Puede ser otro puerto COM (desconecta y elige otro) ' +
+      'o que el firmware no esté subido. Prueba presionar el botón EN de la ESP32.');
+  }, 2500);
+}
+async function desconectar() {
+  try { await enviar('telem 0'); } catch (e) {}
+  try { writer.releaseLock(); } catch (e) {}
+  writer = null;
+  try { await lector.cancel(); } catch (e) {}
+  try { await port.close(); } catch (e) {}
+  document.getElementById('badge').textContent = 'sin conexión · simulación';
+  document.getElementById('badge').classList.remove('on');
+  document.getElementById('btnCon').textContent = 'Conectar';
+}
+let lector = null;
+async function leer() {
+  const dec = new TextDecoder();
+  let resto = '';
+  while (port && port.readable) {
+    lector = port.readable.getReader();
+    try {
+      for (;;) {
+        const { value, done } = await lector.read();
+        if (done) break;
+        resto += dec.decode(value, { stream: true });
+        const lineas = resto.split(/\r?\n/);
+        resto = lineas.pop();
+        lineas.forEach(procesarLinea);
+      }
+    } catch (e) {
+      log('Lectura interrumpida: ' + e.message, 'err');
+    } finally {
+      lector.releaseLock();
+    }
+    if (!writer) break;
+  }
+}
+function procesarLinea(l) {
+  if (!tRx) aviso('');
+  tRx = Date.now();
+  if (l.startsWith('D,')) {   // distancia del ToF de la mano, cada 200 ms
+    const d = +l.slice(2);
+    document.getElementById('tof').textContent = d >= 8000 ? 'ToF: fuera de rango' : `ToF: ${d} mm`;
+    return;
+  }
+  const m = l.match(RX_US);
+  if (m) {
+    usPanel[CANAL[m[1]]] = +m[2];
+    pintarAsistente();
+  }
+  const filaCal = l.match(/^\s*(\d)\s+\w+\s+\(\s*-?[\d.]+,\s*(\d+)\)/);   // fila de la tabla "cal": punto A del canal
+  if (filaCal) pulsoA[+filaCal[1]] = +filaCal[2];
+  const e = l.match(RX_ESTADO);   // respuesta a "estado"
+  if (e) usFirmware[CANAL[e[1]]] = e[2] ? +e[2] : 0;
+  // Sin senal en los servos no llega telemetria T: se avisa para no confundir el dibujo con la pose real
+  if (/^OK,servos libres|^AVISO,reposo|se suelta$/.test(l)) {
+    marcarSueltos(true);
+    rutinaFirmware = false;
+    if (ej) terminarGrabada('Los servos se soltaron: rutina cancelada. Usa HOME antes de repetirla.', false);
+  }
+  if (l.startsWith('OK,telemetria USB activada')) {   // barrera: el paso anterior ya termino
+    if (telemAjenos > 0) telemAjenos--;
+    else if (ej && ej.espera) { ej.espera = false; siguientePaso(); return; }
+  }
+  if (l.startsWith('T,')) {
+    const v = l.split(',').slice(1).map(Number);
+    if (v.length < 17 || v.some(isNaN)) return;
+    marcarSueltos(false);
+    qReal = v.slice(0, 4); pinzaReal = v[4]; tTelemetria = Date.now();
+    if (simulando) return;
+    estado.q = v.slice(0, 4);
+    estado.pinza = v[4];
+    estado.O = [[0, 0, H_BASE]];
+    for (let i = 0; i < 4; i++) estado.O.push(v.slice(5 + 3 * i, 8 + 3 * i));
+    dibujar();
+    return;
+  }
+  if (l.startsWith('E,')) {
+    document.getElementById('estadoRutina').textContent = l.slice(2).replace(/,/g, ' · ');
+    eventoRutina(l.split(',').slice(1));
+    log(l, 'ev');
+  } else log(l, l.startsWith('ERR') ? 'err' : l.startsWith('AVISO') ? 'warn' : '');
+  if (l.startsWith('ERR')) {
+    rutinaFirmware = false;
+    if (ej) terminarGrabada('El brazo rechazó un paso: rutina detenida. Revisa la consola.', true);
+  }
+}
+const RX_US = new RegExp(`^(${NOMBRES.join('|')}) -> (\\d+) us`);
+const RX_ESTADO = new RegExp(`^\\s*(${NOMBRES.join('|')})\\s+(?:(\\d+) us|sin senal)`);
+function marcarSueltos(si) {
+  const b = document.getElementById('servos');
+  b.textContent = si ? 'servos sueltos: el dibujo es la última pose conocida' : 'servos con fuerza';
+  b.classList.toggle('warn', si);
+  sueltos = si;
+}
+async function enviar(cmd) {
+  log('> ' + cmd, 'tx');
+  const orden = cmd.trim();
+  if (orden === 'telem 1') telemAjenos++;   // su respuesta no es la de un paso de la rutina
+  if (orden === 'a' || orden === 'X') {     // PARAR y SOLTAR cancelan todo lo pendiente
+    jogPendiente = null;
+    rutinaFirmware = false;
+    detenerSimulacion();
+    if (ej) terminarGrabada(orden === 'a' ? 'Rutina detenida.' : 'Servos soltados: rutina cancelada.', false);
+  }
+  if (!conectado()) {
+    avisoSinConexion();
+    return simular(cmd);
+  }
+  await writer.write(enc.encode(cmd + '\n'));
+}
+
+// Sin conexion: el panel calcula la FK / IK en el navegador para ver la pose.
+function simular(cmd) {
+  const p = cmd.trim().split(/\s+/), n = p.slice(1).map(Number);
+  let q = null;
+  if (p[0] === 'home') q = Q_HOME.slice();
+  else if (p[0] === 'q' && n.length === 4) q = n;
+  else if (p[0] === 'move' && n.length >= 3) {
+    q = ik(n[0], n[1], n[2], n.length >= 4 ? n[3] : -90);
+    if (!q) return log('(simulación) pose inalcanzable', 'err');
+  } else return log('(simulación: conecta el brazo para este comando)');
+  // El firmware rechaza las poses fuera del rango seguro (con calibracion, el rango puede ser aun mas estrecho)
+  const fuera = q.findIndex((v, i) => v < Q_SEGURO[i][0] || v > Q_SEGURO[i][1]);
+  if (fuera >= 0) return log(`(simulación) ${NOMBRES[fuera]} q=${q[fuera].toFixed(1)} fuera del rango seguro ` +
+    `[${Q_SEGURO[fuera].join(', ')}]: el brazo rechazaría esta pose`, 'err');
+  estado.q = q;
+  estado.O = fk(q);
+  log(`(simulación) q = ${q.map(v => v.toFixed(1)).join(', ')}`);
+  dibujar();
+}
+
+// ---------- Asistente de calibracion ----------
+// Orden base -> hombro -> codo -> muneca -> pinza: al terminar cada articulacion vuelve a su punto A,
+// asi la siguiente se calibra con referencias faciles de ver (hombro vertical, eslabon 3 horizontal...).
+const CANAL = Object.fromEntries(NOMBRES.map((n, i) => [n, i]));
+const pulsoA = {};   // pulso del punto A de cada canal, leido de la tabla "cal"
+const usPanel = {}, usGuardadoA = {}, usFirmware = {};   // usFirmware: pulso que informa "estado" (0 = sin senal)
+// 550 us dejaba a los MG90S empujando contra su tope interno (zumbido "tap tap"); 1000 us es seguro
+const PULSO_INICIAL = 1000;
+// Hombro, codo y muneca se montan con el horn CENTRADO (1500 us en su pose de referencia), asi tienen
+// recorrido hacia ambos lados; con el horn al final del recorrido el servo trabajaba contra su tope y el de
+// la muneca se dano. La pinza solo recorre ~1200-2000 us. La base se dejo como estaba (calibrada a 1000 us).
+const pulsoInicial = ch => ch === 0 ? PULSO_INICIAL : 1500;
+
+function pasosArticulacion(ch, nombre, a, b, sostener) {
+  return [
+    { ch, titulo: `${nombre}: primer pulso`, inicio: true,
+      texto: `Enciende la fuente de 6 V. Este botón envía ${pulsoInicial(ch)} µs al servo de ${nombre.toLowerCase()}: puede dar un salto pequeño al tomar esa posición. Si en algún momento zumba ("tap tap") sin moverse, está contra un tope: retrocede con los botones. ${sostener}` },
+    { ch, titulo: `${nombre}: posición A`, texto: a.texto, accion: `Guardar: ${a.boton}`, cmds: [`cal ${ch} a ${a.q}`], esA: true },
+    { ch, titulo: `${nombre}: posición B`, texto: b.texto, accion: `Guardar: ${b.boton}`, cmds: [`cal ${ch} b ${b.q}`] },
+    { ch, titulo: `${nombre}: límite de un lado`,
+      texto: `Mueve hacia un lado, de a poco, hasta JUSTO antes de que choque con algo (estructura, mesa, cables). Detente si el servo zumba fuerte. Si el límite queda más allá del rango seguro de la tarea, el firmware lo recorta a ese rango. ${sostener}`,
+      accion: 'Guardar este límite', cmds: [`cal ${ch} lim`] },
+    { ch, titulo: `${nombre}: límite del otro lado`,
+      texto: 'Ahora hacia el lado contrario, otra vez hasta justo antes de que choque.',
+      accion: 'Guardar este límite y volver a A', cmds: [`cal ${ch} lim`], volverA: true },
+  ];
+}
+const PASOS = [
+  ...pasosArticulacion(0, 'Base',
+    { q: 0, boton: 'mira al frente', texto: 'Gira la base hasta que el brazo mire derecho AL FRENTE (eje x). Usa una marca en la mesa como referencia.' },
+    { q: 90, boton: 'girada 90° a la izquierda', texto: 'Gira la base 90° hacia la IZQUIERDA (antihorario visto desde arriba), es decir, un cuarto de vuelta desde el frente. Si llega a un tope antes, el horn quedó montado sin recorrido hacia ese lado: hay que remontarlo (guía 04, sección 1).' }, ''),
+  ...pasosArticulacion(1, 'Hombro',
+    { q: 90, boton: 'eslabón 2 vertical', texto: 'Deja el eslabón 2 (hombro → codo) totalmente VERTICAL. Compruébalo con una escuadra apoyada en la mesa.' },
+    { q: 45, boton: 'inclinado 45° adelante', texto: 'Inclina el eslabón 2 hacia ADELANTE hasta 45° (a medio camino entre vertical y horizontal). Usa un transportador o una escuadra de 45°.' },
+    'Sostén el brazo con la mano: el hombro carga todo el peso.'),
+  ...pasosArticulacion(2, 'Codo',
+    { q: -90, boton: 'eslabón 3 horizontal', texto: 'Con el hombro vertical, deja el eslabón 3 (codo → muñeca) HORIZONTAL apuntando hacia adelante: los eslabones 2 y 3 forman una L.' },
+    { q: -45, boton: 'eslabón 3 a 45° hacia arriba', texto: 'Sube el eslabón 3 hasta que apunte 45° hacia ARRIBA y adelante (la L se abre a medio camino de quedar recta).' }, ''),
+  ...pasosArticulacion(3, 'Muñeca',
+    { q: -90, boton: 'pinza apuntando hacia abajo', texto: 'Con el eslabón 3 horizontal, deja la pinza apuntando vertical hacia ABAJO (90° respecto del eslabón 3). Con el horn centrado debería estar cerca de 1500 µs.' },
+    { q: -45, boton: 'pinza en diagonal (45°)', texto: 'Sube la pinza hasta la DIAGONAL: a medio camino entre apuntar hacia abajo y quedar recta con el eslabón 3 (45°). Una escuadra de 45° ayuda. (La pose recta, 0°, queda fuera del recorrido del servo con el horn centrado; por eso no se usa.)' }, ''),
+  { ch: 4, titulo: 'Pinza: primer pulso', inicio: true,
+    texto: `Envía ${pulsoInicial(4)} µs a la pinza. Si zumba sin moverse, retrocede con los botones.` },
+  { ch: 4, titulo: 'Pinza: abierta', accion: 'Guardar: pinza abierta', cmds: ['cal 4 a 0', 'cal 4 lim'], esA: true,
+    texto: 'Abre la pinza lo justo para que un cubo de 20 mm entre con holgura (unos 5 mm por lado). No hace falta abrirla al máximo.' },
+  { ch: 4, titulo: 'Pinza: cerrada sobre el cubo', accion: 'Guardar: pinza cerrada', cmds: ['cal 4 b 100', 'cal 4 lim'], volverA: true,
+    texto: 'Pon un cubo entre los dedos y cierra hasta que lo apriete SIN forzar. Si el servo zumba, retrocede 20 µs. Esta posición queda como el máximo: la pinza nunca apretará más que esto.' },
+  { fin: true, titulo: 'Calibración terminada',
+    texto: 'Pulsa el botón para revisar: muestra la tabla (la columna "hecho" debe decir abmM en cada canal) y luego "verificar" dice si todas las poses de la tarea son alcanzables. Si todo sale OK, prueba "home" y después "prueba 1".',
+    accion: 'Revisar calibración', cmds: ['cal', 'verificar'] },
+];
+let iPaso = 0;
+
+function pintarAsistente() {
+  const p = PASOS[iPaso];
+  document.getElementById('wBarra').style.width = (100 * iPaso / (PASOS.length - 1)) + '%';
+  document.getElementById('wPaso').textContent = `Paso ${iPaso + 1} de ${PASOS.length}` + (p.fin ? '' : ` · canal ${p.ch}`);
+  document.getElementById('wTitulo').textContent = p.titulo;
+  document.getElementById('wTexto').textContent = p.texto;
+  document.getElementById('wAjuste').style.display = p.inicio || p.fin ? 'none' : '';
+  document.getElementById('wPulso').textContent = p.fin ? '' : (usPanel[p.ch] ? usPanel[p.ch] + ' µs' : 'sin pulso: vuelve al paso "primer pulso"');
+  if (!p.fin && usPanel[p.ch]) {
+    ajustarSlider(usPanel[p.ch]);
+    if (document.activeElement !== wNum) wNum.value = usPanel[p.ch];
+  }
+  document.getElementById('wAccion').textContent = p.inicio ? `Enviar primer pulso (${pulsoInicial(p.ch)} µs)` : p.accion;
+  document.getElementById('wAtras').disabled = iPaso === 0;
+  document.getElementById('wSaltar').disabled = iPaso === PASOS.length - 1;
+}
+// Jog sin bloqueo: "obj" solo fija el destino; el firmware lo sigue suave. Se envia como maximo cada 60 ms
+// y siempre el ultimo valor, asi la barra no deja una fila de ordenes atrasadas.
+let jogPendiente = null;
+function moverAsistente(us) {
+  const p = PASOS[iPaso];
+  if (!usPanel[p.ch]) return aviso('<b>Primero envía el primer pulso</b> de esta articulación (vuelve con "← Anterior").');
+  usPanel[p.ch] = Math.min(US_ABS_MAX, Math.max(US_ABS_MIN, Math.round(us)));
+  jogPendiente = p.ch;
+  pintarAsistente();
+}
+setInterval(() => {
+  if (jogPendiente === null || !conectado()) return;
+  const ch = jogPendiente;
+  jogPendiente = null;
+  writer.write(enc.encode(`obj ${ch} ${usPanel[ch]}\n`));
+}, 60);
+async function accionAsistente() {
+  const p = PASOS[iPaso];
+  if (!conectado()) return avisoSinConexion();
+  if (jogPendiente !== null) {   // el ultimo movimiento de la barra va antes de guardar
+    const ch = jogPendiente;
+    jogPendiente = null;
+    await enviar(`obj ${ch} ${usPanel[ch]}`);
+  }
+  if (p.inicio) {
+    // Si el servo ya tiene fuerza (por ejemplo tras "home"), se parte desde donde esta, sin moverlo:
+    // saltar a un pulso fijo con el brazo armado puede llevar la pieza contra la mesa o la estructura.
+    delete usFirmware[p.ch];
+    await enviar('cal');
+    await enviar('estado');
+    for (let t = 0; t < 15 && usFirmware[p.ch] === undefined; t++) await new Promise(r => setTimeout(r, 100));
+    if (usFirmware[p.ch]) {
+      usPanel[p.ch] = usFirmware[p.ch];
+      log(`${PASOS[iPaso].titulo}: el servo ya tiene fuerza en ${usFirmware[p.ch]} µs; se parte desde ahí sin moverlo`, 'ev');
+    } else {
+      // El primer pulso es de golpe: se usa el punto A guardado, la pose de referencia de esa pieza.
+      const pulso = pulsoA[p.ch] || pulsoInicial(p.ch);
+      if (!confirm(`El servo irá DE GOLPE a ${pulso} µs. Sostén la pieza cerca de su pose de referencia. ¿Seguir?`)) return;
+      usPanel[p.ch] = pulso;
+      await enviar(`us ${p.ch} ${pulso}`);
+    }
+  } else {
+    for (const c of p.cmds) await enviar(c);
+    if (p.esA) usGuardadoA[p.ch] = usPanel[p.ch];
+    if (p.volverA && usGuardadoA[p.ch]) {
+      usPanel[p.ch] = usGuardadoA[p.ch];
+      await enviar(`us ${p.ch} ${usGuardadoA[p.ch]}`);
+    }
+  }
+  if (iPaso < PASOS.length - 1) iPaso++;
+  pintarAsistente();
+}
+// Ajuste fino: la barra cubre solo ±150 us alrededor del valor actual (1 us por paso) y se recentra al soltarla.
+// No se recentra mientras se arrastra: cambiar min/max en medio del arrastre haria saltar el servo.
+const wSlider = document.getElementById('wSlider'), wFino = document.getElementById('wFino'), wNum = document.getElementById('wNum');
+const SPAN_FINO = 150;
+function centrarSlider(us) {
+  const c = Math.min(US_ABS_MAX - SPAN_FINO, Math.max(US_ABS_MIN + SPAN_FINO, us));
+  wSlider.min = c - SPAN_FINO; wSlider.max = c + SPAN_FINO; wSlider.step = 1;
+}
+function ajustarSlider(us) {
+  if (wFino.checked) {
+    if (wSlider.step !== '1' || us < +wSlider.min || us > +wSlider.max) centrarSlider(us);
+  } else if (wSlider.step !== '5') {
+    wSlider.min = US_ABS_MIN; wSlider.max = US_ABS_MAX; wSlider.step = 5;
+  }
+  wSlider.value = us;
+}
+document.querySelectorAll('#wAjuste [data-d]').forEach(b =>
+  b.addEventListener('click', () => moverAsistente((usPanel[PASOS[iPaso].ch] || 0) + +b.dataset.d)));
+wSlider.addEventListener('input', e => moverAsistente(+e.target.value));
+wSlider.addEventListener('change', () => { const us = usPanel[PASOS[iPaso].ch]; if (wFino.checked && us) { centrarSlider(us); wSlider.value = us; } });
+wFino.addEventListener('change', () => { const us = usPanel[PASOS[iPaso].ch]; if (us) { if (wFino.checked) centrarSlider(us); ajustarSlider(us); } });
+wNum.addEventListener('change', () => { if (wNum.value !== '') moverAsistente(+wNum.value); });
+document.getElementById('wIr').addEventListener('change', e => {
+  if (e.target.value === '') return;
+  iPaso = PASOS.findIndex(p => p.ch === +e.target.value);
+  e.target.value = '';
+  pintarAsistente();
+});
+document.getElementById('wAccion').addEventListener('click', accionAsistente);
+document.getElementById('wAtras').addEventListener('click', () => { if (iPaso > 0) iPaso--; pintarAsistente(); });
+document.getElementById('wSaltar').addEventListener('click', () => { if (iPaso < PASOS.length - 1) iPaso++; pintarAsistente(); });
+
+// ---------- Controles ----------
+const SL = [['B', 'base'], ['H', 'hombro'], ['C', 'codo'], ['M', 'muñeca'], ['P', 'pinza']];
+const pendientes = {};
+document.getElementById('sliders').innerHTML = SL.map(([k, n]) =>
+  `<div class="slider"><label for="s${k}">${n} (${k})</label><input id="s${k}" type="range" min="0" max="180" value="90"><span id="v${k}">90</span></div>`).join('');
+SL.forEach(([k]) => document.getElementById('s' + k).addEventListener('input', e => {
+  document.getElementById('v' + k).textContent = e.target.value;
+  pendientes[k] = e.target.value;
+}));
+setInterval(() => {   // un envio por slider cada 80 ms como maximo
+  for (const k in pendientes) { if (conectado() && !ocupado()) enviar(k + pendientes[k]); delete pendientes[k]; }
+}, 80);
+
+document.querySelectorAll('[data-cmd]').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.cmd === 'home' && !permitirSalto()) return;
+  enviar(b.dataset.cmd);
+}));
+
+// ---------- Rutinas ----------
+// Estado compartido: pose informada por la ESP32 y si hay algo en curso.
+let qReal = null, pinzaReal = 0, tTelemetria = 0, sueltos = false, telemAjenos = 0;
+let rutinaFirmware = false;   // rutina con sensor o "aprender" en la ESP32
+let ej = null;                // rutina grabada en ejecucion
+let simulando = null;
+const capRutina = document.getElementById('capRutina');
+const poseReciente = () => conectado() && qReal && !sueltos && Date.now() - tTelemetria < 2500;
+const ocupado = () => !!ej || rutinaFirmware;
+
+// Con servos sin senal, el firmware los lleva de golpe a su destino: se pide confirmar.
+function permitirSalto() {
+  return !conectado() || poseReciente() ||
+    confirm('Los servos no tienen señal y el firmware los llevará DE GOLPE a la pose. Sostén el brazo cerca de HOME. ¿Seguir?');
+}
+
+// --- Rutina con sensor: corre en la ESP32 (comando A); aqui solo se muestran sus eventos ---
+function eventoRutina(p) {
+  const tb = document.querySelector('#tblTof tbody');
+  if (p[0] === 'INICIO') tb.innerHTML = '';
+  if (p[0] === 'DISTANCIA' && p.length >= 5) {
+    let fila = document.getElementById('tof' + p[1]);
+    if (!fila) { fila = document.createElement('tr'); fila.id = 'tof' + p[1]; tb.appendChild(fila); }
+    fila.innerHTML = `<td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td><td>${p[4]}</td>`;
+  }
+  if (['FIN', 'ERROR', 'PARADO'].includes(p[0])) rutinaFirmware = false;
+}
+function iniciarEnFirmware(cmd) {
+  if (!conectado()) return avisoSinConexion();
+  if (ocupado() || !permitirSalto()) return;
+  rutinaFirmware = cmd === 'A';   // "aprender" no informa eventos al terminar
+  enviar(cmd);
+}
+document.getElementById('btnAprender').addEventListener('click', () => {
+  if (confirm('Deja la mesa SIN cubos: el brazo visitará cada punto con el sensor. ¿Seguir?')) iniciarEnFirmware('aprender');
+});
+document.getElementById('btnRutinaTof').addEventListener('click', () => iniciarEnFirmware('A'));
+
+// --- Rutina grabada: lista de poses que se guarda en este navegador ---
+let pasos = [];
+try { pasos = JSON.parse(localStorage.getItem('rutinaBrazo')) || []; } catch (e) { pasos = []; }
+function pintarPasos(marcado) {
+  try { localStorage.setItem('rutinaBrazo', JSON.stringify(pasos)); } catch (e) {}
+  document.querySelector('#tblPasos tbody').innerHTML = pasos.map((p, i) =>
+    `<tr${i === marcado ? ' style="background:var(--grid);font-weight:600"' : ''}><td>${i + 1}</td>${p.q.map(v => `<td>${v.toFixed(1)}</td>`).join('')}<td>${Math.round(p.pinza)}</td></tr>`).join('');
+  if (!ocupado() && !simulando) capRutina.textContent = pasos.length ? `${pasos.length} pasos.` : 'Sin pasos.';
+}
+document.getElementById('btnGuardarPose').addEventListener('click', () => {
+  if (!poseReciente()) return aviso('<b>No se puede guardar:</b> el brazo no informa su pose. Conéctalo y dale señal a la base, el hombro, el codo y la muñeca (HOME o los sliders).');
+  pasos.push({ q: qReal.map(v => +v.toFixed(1)), pinza: Math.round(pinzaReal) });
+  pintarPasos();
+});
+document.getElementById('btnQuitarPose').addEventListener('click', () => { pasos.pop(); pintarPasos(); });
+document.getElementById('btnBorrarPoses').addEventListener('click', () => {
+  if (pasos.length && confirm('¿Borrar todos los pasos?')) { pasos = []; pintarPasos(); }
+});
+
+// El firmware no avisa al terminar un movimiento, pero ejecuta los comandos en orden. Tras cada paso se
+// envia "telem 1" (no cambia nada): cuando llega su respuesta, los movimientos anteriores ya terminaron.
+function segundosTramo(qa, qb) {   // misma formula que trayectoria() en el firmware
+  return Math.max(0.4, 1.875 * Math.max(...qa.map((v, i) => Math.abs(qb[i] - v))) / 60);
+}
+function revisarRutina(qInicio) {
+  let qa = qInicio;
+  for (let k = 0; k < pasos.length; k++) {
+    const qb = pasos[k].q;
+    const fuera = qb.findIndex((v, i) => v < Q_SEGURO[i][0] || v > Q_SEGURO[i][1]);
+    if (fuera >= 0) return `Paso ${k + 1}: ${NOMBRES[fuera]} queda fuera del rango seguro.`;
+    for (let j = 1; j <= 20; j++) {
+      const s = quintica(j / 20), O = fk(qa.map((v, i) => v + (qb[i] - v) * s));
+      if (Math.min(...O.slice(2).map(p => p[2])) < 2) return `Tramo al paso ${k + 1}: el brazo tocaría la mesa.`;
+    }
+    qa = qb;
+  }
+  return '';
+}
+const quintica = s => s * s * s * (10 + s * (6 * s - 15));
+document.getElementById('btnEjecutar').addEventListener('click', () => {
+  if (ej) { if (ej.pausa) alternarPausa(); return; }
+  if (!conectado()) return avisoSinConexion();
+  if (rutinaFirmware) return;
+  if (!pasos.length) return aviso('<b>La rutina no tiene pasos.</b>');
+  detenerSimulacion();
+  if (!poseReciente()) return aviso('<b>El brazo no informa su pose:</b> usa HOME o los sliders antes de la rutina.');
+  const problema = revisarRutina(qReal);
+  if (problema) return aviso('<b>Rutina no ejecutada.</b> ' + problema);
+  aviso('');
+  ej = { pasos: JSON.parse(JSON.stringify(pasos)), k: -1, q: qReal.slice(), pinza: null, espera: false, pausa: false, limite: 0 };
+  siguientePaso();
+});
+async function siguientePaso() {
+  if (!ej) return;
+  if (ej.pausa) { capRutina.textContent = `En pausa después del paso ${ej.k + 1}.`; return; }
+  if (sueltos || Date.now() - tTelemetria > 3500) return terminarGrabada('El brazo dejó de informar su pose: rutina cancelada.', false);
+  ej.k++;
+  if (ej.k >= ej.pasos.length) {
+    if (!document.getElementById('chkBucle').checked) return terminarGrabada(`Rutina terminada (${ej.pasos.length} pasos).`, false);
+    ej.k = 0;
+  }
+  const p = ej.pasos[ej.k], paso = ej;
+  let s = 0;
+  if (p.q.some((v, i) => Math.abs(v - paso.q[i]) > 0.05)) {
+    await enviar('q ' + p.q.map(v => v.toFixed(1)).join(' '));
+    s += segundosTramo(paso.q, p.q);
+    paso.q = p.q.slice();
+  }
+  if (paso.pinza === null || Math.abs(p.pinza - paso.pinza) > 0.5) {
+    await enviar(`pinza ${Math.round(p.pinza)}`);
+    s += 0.6;
+    paso.pinza = p.pinza;
+  }
+  if (ej !== paso) return;   // se detuvo mientras se enviaba
+  telemAjenos--;             // esta barrera SI es de un paso (enviar la conto como ajena)
+  await enviar('telem 1');
+  paso.espera = true;
+  paso.limite = Date.now() + s * 1000 + 5000;
+  capRutina.textContent = `Brazo: paso ${paso.k + 1} de ${paso.pasos.length}.`;
+  pintarPasos(paso.k);
+}
+function terminarGrabada(msg, parar) {
+  ej = null;
+  document.getElementById('btnPausa').textContent = 'Pausa';
+  if (parar && conectado()) enviar('a');
+  capRutina.textContent = msg;
+  pintarPasos();
+  capRutina.textContent = msg;
+}
+function alternarPausa() {
+  if (!ej) return;
+  ej.pausa = !ej.pausa;
+  document.getElementById('btnPausa').textContent = ej.pausa ? 'Continuar' : 'Pausa';
+  if (!ej.pausa && !ej.espera) siguientePaso();
+}
+document.getElementById('btnPausa').addEventListener('click', alternarPausa);
+document.getElementById('btnDetener').addEventListener('click', () => { if (ej) enviar('a'); detenerSimulacion(); });
+setInterval(() => { if (ej && ej.espera && Date.now() > ej.limite) terminarGrabada('El brazo no confirmó el paso a tiempo: rutina detenida.', true); }, 300);
+
+// --- Simulacion: anima la rutina en el dibujo, con los tiempos del firmware; no mueve el brazo ---
+function detenerSimulacion() {
+  if (simulando) clearInterval(simulando);
+  simulando = null;
+}
+document.getElementById('btnSimular').addEventListener('click', () => {
+  if (!pasos.length || ej) return;
+  detenerSimulacion();
+  const problema = revisarRutina(estado.q);
+  capRutina.textContent = problema || 'Simulando…';
+  let qa = estado.q.slice(), t = 0;
+  const tramos = pasos.map(p => { const d = segundosTramo(qa, p.q), r = { t0: t, d, qa, qb: p.q, pinza: p.pinza }; t += d; qa = p.q; return r; });
+  const inicio = Date.now();
+  simulando = setInterval(() => {
+    const now = (Date.now() - inicio) / 1000, k = tramos.findIndex(r => now <= r.t0 + r.d);
+    if (k < 0) {
+      detenerSimulacion();
+      capRutina.textContent = problema || 'Simulación terminada.';
+      pintarPasos();
+      return;
+    }
+    const r = tramos[k], s = quintica((now - r.t0) / r.d);
+    estado.q = r.qa.map((v, i) => v + (r.qb[i] - v) * s);
+    estado.pinza = r.pinza;
+    estado.O = fk(estado.q);
+    pintarPasos(k);
+    dibujar();
+  }, 50);
+});
+pintarPasos();
+document.getElementById('btnCon').addEventListener('click', conectar);
+document.getElementById('btnMove').addEventListener('click', () =>
+  enviar(`move ${['mx', 'my', 'mz', 'mphi'].map(i => document.getElementById(i).value).join(' ')}`));
+document.getElementById('btnTofCal').addEventListener('click', () =>
+  enviar(`tof cal ${document.getElementById('tofReal').value}`));
+['q1', 'q2', 'q3', 'q4'].forEach((id, i) => { document.getElementById(id).value = Q_HOME[i]; });
+document.getElementById('btnQ').addEventListener('click', () =>
+  enviar(`q ${['q1', 'q2', 'q3', 'q4'].map(i => document.getElementById(i).value).join(' ')}`));
+const cmdEl = document.getElementById('cmd');
+const enviarCmd = () => { if (cmdEl.value.trim()) enviar(cmdEl.value.trim()); cmdEl.value = ''; };
+document.getElementById('btnSend').addEventListener('click', enviarCmd);
+cmdEl.addEventListener('keydown', e => { if (e.key === 'Enter') enviarCmd(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') enviar('a');   // Esc = parar (mantiene la fuerza)
+  if (e.key === 'F2') { e.preventDefault(); enviar('X'); }   // F2 = soltar servos
+});
+// Al cerrar o recargar la pestaña con el brazo conectado: se detiene donde esta (no se suelta, para que no caiga).
+addEventListener('pagehide', () => { if (conectado()) writer.write(enc.encode('a\n')); });
+
+if (!('serial' in navigator)) aviso(SIN_WEBSERIAL);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', dibujar);
+dibujar();
+pintarAsistente();
+log(`Panel listo (constantes de config.h ${CONFIG_H}). Cierra el Serial Monitor de PlatformIO antes de conectar (el puerto no se puede compartir).`);
+</script>
+</body>
+</html>

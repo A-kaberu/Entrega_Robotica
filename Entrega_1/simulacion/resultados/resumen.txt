@@ -1,0 +1,37 @@
+[OK ] arranca y encuentra PCA9685 y sensor
+[OK ] sin calibrar no se mueve
+[OK ] calibracion completa en los 5 canales
+[OK ] verificar: poses de la tarea alcanzables
+[OK ] A sin 'aprender' da un solo error y se apaga  (1 error(es))
+[OK ] home lleva el brazo a Q_HOME
+[OK ] dh muestra la matriz T0_4
+[OK ] telemetria T con 17 valores
+[OK ] telemetria D con la distancia
+[OK ] aprender mide la mesa vacia  (referencia 80 mm)
+[OK ] error de altura nulo en mundo ideal  (dz 0.0 mm)
+[OK ] sin cubos: los 3 puntos VACIO, E,FIN,0 y vuelve a HOME
+[OK ] cubo corrido 30 mm: no lo detecta y vuelve a HOME
+[OK ] un cubo: lo detecta, lo lleva a la pila y vuelve a HOME  (queda en x=0.4 y=95.4 z=0.0)
+[OK ] tres cubos: quedan apilados en el punto final  (alturas 0.0 20.0 40.0 mm)
+[OK ] termina en HOME
+[OK ] la punta nunca baja de la mesa  (minimo 4.6 mm)
+[OK ] el cubo llevado no choca con otros
+[OK ] todas las articulaciones dentro del rango seguro  (q1 [-45.2, 89.8] q2 [49.2, 87.8] q3 [-88.1, -24.1] q4 [-116.0, -62.7] )
+      duracion de la rutina de 3 cubos: 57.2 s
+[OK ] repetir sin cubos en recogida no altera la pila
+[OK ] PARAR detiene la rutina y mantiene la fuerza
+[OK ] SOLTAR corta los pulsos en el chip, a mitad de la rutina
+[OK ] rechaza una pose fuera de limites
+[OK ] rechaza un punto fuera de alcance
+[OK ] us se recorta al limite seguro  (codo a 1452 us)
+[OK ] slider 0-180 recorre el rango del codo  (650 a 1452 us)
+[OK ] comandos pegados de la app se separan
+[OK ] slider con decimales de App Inventor
+[OK ] la pinza afloja tras cerrar sin soltar  (cierre 95.0 %)
+[OK ] la pinza se suelta al quedar abierta
+[OK ] servo pegado a su limite retrocede  (650 a 680 us)
+[OK ] reposo: sin ordenes suelta todos los servos
+[OK ] limite repetido: se rechaza y sigue incompleto
+[OK ] limites al mismo lado del punto medio quedan bien  (1100 a 1700 us)
+
+RESULTADO: 34 de 34 pruebas correctas
