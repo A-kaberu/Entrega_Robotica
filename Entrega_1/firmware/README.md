@@ -1,35 +1,31 @@
-# Firmware del brazo 4 GDL
+# Firmware del brazo
 
-Programa de la ESP32: recibe comandos por USB o Bluetooth, calcula el modelo D-H y mueve 5 servos MG90S mediante un PCA9685. También lee el sensor VL53L0X.
+Programa de la ESP32. Recibe órdenes por USB o Bluetooth, calcula el modelo D-H, mueve los 5 servos y lee el sensor de distancia.
 
 ## Archivos
 
-| Archivo | Función | Se conecta con |
-|---|---|---|
-| `src/config.h` | Medidas D-H, HOME, límites seguros, puntos de la tarea y constantes. Es la única fuente de estos números | Todos los demás; también lo leen `analisis/dh_brazo.py` y el panel |
-| `src/cinematica.h` | Matrices D-H, cinemática directa e inversa | Lo usan `main.cpp` y `actuadores.h` |
-| `src/actuadores.h` | Manejo del PCA9685, calibración, seguimiento suave y trayectorias quínticas | Lo usa `main.cpp` |
-| `src/main.cpp` | Intérprete de comandos, telemetría, sensor, rutina automática y protecciones | Punto de entrada: `setup()` y `loop()` |
-| `platformio.ini` | Configuración de compilación y librerías | PlatformIO |
+| Archivo | Para qué sirve |
+|---|---|
+| `src/config.h` | Medidas del brazo, límites seguros y puntos de la tarea |
+| `src/cinematica.h` | Cálculos del modelo D-H |
+| `src/actuadores.h` | Control de los servos y calibración |
+| `src/main.cpp` | Órdenes, sensor, rutina automática y protecciones |
+| `platformio.ini` | Configuración para compilar |
 
 ## Cómo se usa
-1. Abrir esta carpeta con PlatformIO y subir a la ESP32. Si falla el arranque, mantener **BOOT** durante la subida.
-2. Controlar el brazo desde `panel/panel_brazo.html` (PC) o la app Android.
+1. Abrir esta carpeta con PlatformIO y subir el programa a la ESP32.
+2. Controlar el brazo con el panel del PC o con la app Android.
 
-## Comandos principales
+## Órdenes principales
 
-| Comando | Qué hace |
+| Orden | Qué hace |
 |---|---|
-| `cal`, `cal <canal> a\|b <grados>`, `cal <canal> lim` | Muestra o guarda la calibración |
-| `verificar` | Revisa, sin mover, si las poses de la tarea son alcanzables |
-| `home`, `q q1 q2 q3 q4`, `move x y z [phi]`, `pinza 0-100` | Movimientos |
-| `B/H/C/M/P<0-180>` | Sliders de la app |
-| `aprender`, `A` | Aprende la mesa vacía; inicia la rutina con sensor |
-| `a` / `X` | PARAR / SOLTAR, también durante un movimiento |
+| `home` | Lleva el brazo a su posición inicial |
+| `B/H/C/M/P<0-180>` | Mueve base, hombro, codo, muñeca o pinza |
+| `aprender` | Mide la mesa vacía con el sensor |
+| `A` | Inicia la rutina automática |
+| `a` | Detiene el brazo |
+| `X` | Suelta todos los servos |
 
-La lista completa está al inicio de `src/main.cpp`.
-
-## Rutina automática (`A`)
-En cada punto de recogida, el sensor mide la distancia. Si es al menos 10 mm menor que la de la mesa vacía, hay un cubo: lo toma, lo traslada a una altura segura y lo apila. Si no quedan cubos, vuelve a HOME.
-
-La comprobación sin hardware está en `simulacion/`.
+## Rutina automática
+El brazo revisa cada punto con el sensor. Si detecta un cubo, lo toma, lo traslada y lo apila. Cuando no quedan cubos, vuelve a su posición inicial.

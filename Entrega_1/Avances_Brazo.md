@@ -1,9 +1,9 @@
-# Avances observados en el brazo robótico
+# Resultados en el brazo robótico
 
-Registro de lo que se ha visto en el brazo físico. Las evidencias (fotos y videos) se agregan en la carpeta `Evidencias/`.
+Resume cómo se comportó el brazo físico en las pruebas y qué se comprobó en simulación.
 
-## Estado general (05-11-2026)
-El brazo **no ejecuta bien los movimientos**. Tiene problemas de agarre en ciertos puntos clave de los eslabones, donde el servo se une a la pieza. Por eso, muchas veces los servos se sobrecalientan o no ejecutan los movimientos que deberían hacer para la rutina. **Por lo tanto, no se cumple lo esperado en el brazo físico.**
+## Resultado general
+El brazo físico no ejecutó bien los movimientos. Se observó un agarre deficiente en algunas uniones entre servo y eslabón, y los servos se sobrecalentaron o no completaron algunos movimientos de la rutina. Por eso, el brazo físico no cumplió lo esperado.
 
 Las piezas no se alcanzaron a reimprimir ni rediseñar.
 
@@ -29,12 +29,7 @@ Las piezas no se alcanzaron a reimprimir ni rediseñar.
 | Sobrecalentamiento | Se percibió en los servos durante las pruebas (sin medición de temperatura) |
 | Rutina completa | No se ejecutó en el brazo físico |
 
-Causa probable: agarre deficiente entre servo y eslabón. No se alcanzó a confirmar en cada articulación, ni a comprobar si la calibración del codo coincide con la pose real.
+La causa probable es el agarre deficiente entre servo y eslabón. No se alcanzó a confirmar en cada articulación, ni a comprobar si la calibración del codo coincide con la pose real.
 
-## Lo que sí está validado
-La lógica del firmware se comprobó en simulación: ver `simulacion/resultados/resumen.txt`. Esa simulación usa un mundo ideal y **no reemplaza** la prueba mecánica.
-
-## Pendiente
-- Agregar fotos y videos a `Evidencias/`.
-- Revisar el juego de cada unión servo–eslabón, con la fuente apagada.
-- Recalibrar el codo y repetir las pruebas si se corrige el agarre.
+## Resultado en simulación
+Se validó la lógica del firmware en una simulación virtual: 34 de 34 pruebas correctas (`simulacion/resultados/resumen.txt`). La simulación usa un mundo ideal, sin holguras, peso ni deslizamiento, así que no permitió comprobar la efectividad mecánica del brazo.

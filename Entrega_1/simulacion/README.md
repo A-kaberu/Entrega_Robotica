@@ -1,29 +1,26 @@
 # Simulación del firmware
 
-Compila el firmware real (`firmware/src/main.cpp`) en el PC, **sin cambios**, sobre un hardware emulado, y le envía los mismos comandos que recibiría por USB.
+Ejecuta el firmware del brazo en el PC, con un hardware virtual, para probarlo sin el brazo físico.
 
-**Qué comprueba:** la lógica (calibración, D-H, detección, rutina, límites y protecciones).
-**Qué no comprueba:** la mecánica. El mundo simulado es ideal: sin holguras, peso ni deslizamiento de los servos.
+**Qué comprueba:** la lógica del firmware (calibración, D-H, detección, rutina, límites y protecciones).
+
+**Qué no comprueba:** la mecánica. El mundo simulado es ideal, sin holguras, peso ni deslizamiento.
 
 ## Archivos
 
-| Archivo | Función |
+| Archivo | Para qué sirve |
 |---|---|
-| `emulador/` | Reemplaza Arduino, I2C con un PCA9685 emulado, sensor, Bluetooth y memoria |
-| `simular_firmware.cpp` | Crea el mundo simulado (cubos, sensor) y ejecuta las pruebas |
-| `generar_visor.py` | Compara con el modelo Python de `analisis/dh_brazo.py` y crea el visor |
-| `resultados/simulaciones.html` | Visor: animación, ángulos en el tiempo y resultados. Se abre en el navegador |
+| `emulador/` | Reemplaza por software la ESP32, los servos y el sensor |
+| `simular_firmware.cpp` | Crea el mundo simulado y ejecuta las pruebas |
+| `generar_visor.py` | Crea el visor de resultados |
+| `resultados/simulaciones.html` | Muestra la animación y los resultados en el navegador |
 | `resultados/resumen.txt` | Resultado de cada prueba |
-| `resultados/rutina_3_cubos.csv` | Movimiento registrado cada 50 ms |
-| `resultados/eventos_rutina.txt` | Mensajes del firmware durante la rutina |
 
 ## Cómo se ejecuta
-Desde la carpeta que contiene `firmware/` y `simulacion/`, con g++ y Python:
+Desde la carpeta `Entrega_1`, con g++ y Python:
 
 ```bash
 g++ -std=gnu++17 -O1 -w -Isimulacion/emulador -Ifirmware/src simulacion/simular_firmware.cpp -o simulacion/simular_firmware.exe
 ./simulacion/simular_firmware.exe
 python simulacion/generar_visor.py
 ```
-
-Para guardar una imagen, usa el botón **Guardar imagen** del visor. Las figuras del informe salen de `resultados/q_t.csv` y `resultados/punta.csv`.

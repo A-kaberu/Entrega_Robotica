@@ -1,10 +1,10 @@
 # Análisis en el PC
 
-| Archivo | Función | Uso |
-|---|---|---|
-| `dh_brazo.py` | Tabla D-H, matrices, cinemática directa e inversa. Lee las medidas de `firmware/src/config.h`. Puede comparar con el brazo en vivo | `python dh_brazo.py tabla 0 90 -90 0` · `ik x y z` · `tarea` · `formulas` · `comparar COM13` |
-| `dh_brazo.m` | Lo mismo en MATLAB, con forma simbólica y dibujo | Abrir en MATLAB y ejecutar por secciones. No se ha ejecutado |
-| `kinematics.py` | Alcance, singularidades, torques y estimación de masas (análisis de diseño) | `python kinematics.py` |
-| `stl_tools.py` | Medidas y vistas de los archivos STL | `python stl_tools.py info pieza.stl` |
+Programas para calcular el movimiento del brazo y estudiar su diseño.
 
-`dh_brazo.py` también lo usa `simulacion/generar_visor.py` para comparar el firmware con un modelo independiente.
+| Archivo | Para qué sirve | Cómo se usa |
+|---|---|---|
+| `dh_brazo.py` | Calcula la tabla D-H y las posiciones y ángulos del brazo | `python dh_brazo.py tabla 0 90 -90 0` |
+| `dh_brazo.m` | Hace los mismos cálculos en MATLAB y dibuja el brazo | Abrir en MATLAB y ejecutar por secciones |
+| `kinematics.py` | Calcula alcance, torques y masas | `python kinematics.py` |
+| `stl_tools.py` | Obtiene medidas y vistas de las piezas 3D | `python stl_tools.py info pieza.stl` |
